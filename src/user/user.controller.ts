@@ -1,34 +1,18 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
   Get,
+  HttpStatus,
+  Patch,
+  Post,
   Query,
   Res,
-  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post('register')
-  async register(
-    @Body() body: { email: string; password: string },
-    @Res() res,
-  ) {
-    try {
-      await this.userService.registerUser(body.email, body.password);
-      return res
-        .status(HttpStatus.OK)
-        .json({ message: 'Verification email sent' });
-    } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Registration failed', error });
-    }
-  }
 
   @Get('verify-email')
   async verifyEmail(@Query('token') token: string, @Res() res) {
@@ -42,13 +26,30 @@ export class UserController {
     }
   }
 
+  @Patch('update-telecoms')
+  async updateTelecoms(
+    @Body() body: { email: string; telecoms: { email: string }[] },
+    @Res() res,
+  ) {
+    try {
+      await this.userService.updateTelecoms(body.email, body.telecoms);
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Verification email sent' });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to update telecoms', error });
+    }
+  }
+
   @Post('resend-verification-email')
   async resendVerificationEmail(@Body() body: { email: string }, @Res() res) {
     try {
       await this.userService.resendVerificationEmail(body.email);
       return res
         .status(HttpStatus.OK)
-        .json({ message: 'New verification email sent' });
+        .json({ message: 'Verification email resent' });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

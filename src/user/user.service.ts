@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
-import { User } from './user.entity';
+import { User } from '../models/entities/user.entity';
 import { SesService } from '../ses/ses.service';
 
 @Injectable()
@@ -29,6 +29,30 @@ export class UserService {
     await this.awsSesService.sendVerificationEmail(email, verificationToken);
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
+  }
+
+  async updateTelecoms(
+    email: string,
+    telecoms: { email: string }[],
+  ): Promise<void> {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const verificationToken = this.generateVerificationToken(email);
+    user.verificationToken = verificationToken;
+
+    await this.awsSesService.sendVerificationEmail(email, verificationToken);
+
+    user.telecoms.push(...telecoms.map((t) => ({ email: t.email })));
+    user.verificationToken = null;
+
+    await user.save();
+  }
+
   async verifyEmail(token: string): Promise<boolean> {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET) as {
@@ -45,6 +69,7 @@ export class UserService {
 
       user.isVerified = true;
       user.verificationToken = undefined; // Clear the verification token
+      user.telecoms.push({ email: decoded.email });
       await user.save();
       return true;
     } catch (err) {

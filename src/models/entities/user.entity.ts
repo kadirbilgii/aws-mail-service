@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Telecoms, TelecomsSchema } from 'src/models/types/telecoms';
 import { v4 as uuidv4 } from 'uuid';
 
 @Schema({ versionKey: false })
@@ -18,6 +19,9 @@ export class User extends Document {
 
   @Prop()
   verificationToken: string;
+
+  @Prop({ type: [TelecomsSchema], default: [] })
+  telecoms: Telecoms[];
 
   @Prop({ default: Date.now })
   createdAt: Date;

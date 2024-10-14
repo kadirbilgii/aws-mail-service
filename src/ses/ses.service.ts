@@ -19,7 +19,7 @@ export class SesService {
   }
 
   async sendVerificationEmail(toEmail: string, token: string): Promise<void> {
-    const verificationLink = `http://localhost:3000/users/verify-email?token=${token}`;
+    const verificationLink = `http://localhost:3000/user/verify-email?token=${token}`;
 
     const params = {
       Destination: {
