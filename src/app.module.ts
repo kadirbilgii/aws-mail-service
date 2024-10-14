@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
-import { SesModule } from './ses/ses.module';
 import { User, UserSchema } from './models/entities/user.entity';
+import { UserModule } from './modules/user.module';
+import { SesModule } from './modules/ses.module';
+import { RedisModule } from './modules/redis.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { User, UserSchema } from './models/entities/user.entity';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     UserModule,
     SesModule,
+    RedisModule,
   ],
 })
 export class AppModule {}

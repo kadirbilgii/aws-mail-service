@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SesService } from './ses.service';
+import { SesService } from 'src/ses/ses.service';
 
 @Module({
   providers: [SesService],

@@ -14,6 +14,23 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Post('register')
+  async register(
+    @Body() body: { email: string; password: string },
+    @Res() res,
+  ) {
+    try {
+      await this.userService.registerUser(body.email, body.password);
+      return res
+        .status(HttpStatus.CREATED)
+        .json({ message: 'Verification email sent' });
+    } catch (error) {
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: error.message });
+    }
+  }
+
   @Get('verify-email')
   async verifyEmail(@Query('token') token: string, @Res() res) {
     const isVerified = await this.userService.verifyEmail(token);

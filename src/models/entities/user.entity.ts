@@ -17,9 +17,6 @@ export class User extends Document {
   @Prop({ default: false })
   isVerified: boolean;
 
-  @Prop()
-  verificationToken: string;
-
   @Prop({ type: [TelecomsSchema], default: [] })
   telecoms: Telecoms[];
 
