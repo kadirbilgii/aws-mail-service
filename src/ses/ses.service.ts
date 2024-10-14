@@ -10,16 +10,16 @@ export class SesService {
 
   constructor() {
     this.sesClient = new SESClient({
-        region: process.env.AWS_REGION,
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        },
-      });
-    }
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
+    });
+  }
 
   async sendVerificationEmail(toEmail: string, token: string): Promise<void> {
-    const verificationLink = `http://localhost:3000/verify-email?token=${token}`;
+    const verificationLink = `http://localhost:3000/users/verify-email?token=${token}`;
 
     const params = {
       Destination: {
@@ -38,17 +38,10 @@ export class SesService {
           Data: 'E-posta Doğrulama',
         },
       },
-      Source: 'kadrcoblg@gmail.com',
+      Source: process.env.SES_EMAIL_SOURCE,
     };
 
     const command = new SendEmailCommand(params);
-
-    try {
-      await this.sesClient.send(command);
-      console.log(`Verification email sent to ${toEmail}`);
-    } catch (error) {
-      console.error('Error sending email:', error);
-      throw new Error('Email sending failed');
-    }
+    await this.sesClient.send(command);
   }
 }

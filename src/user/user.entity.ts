@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Schema({ versionKey: false })
 export class User extends Document {
-
   @Prop({ type: String, default: () => uuidv4().replace(/-/g, ''), length: 25 })
   _id: string;
 

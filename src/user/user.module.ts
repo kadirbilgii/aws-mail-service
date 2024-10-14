@@ -7,10 +7,10 @@ import { SesModule } from '../ses/ses.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), 
-    SesModule, 
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    SesModule,
   ],
-  controllers: [UserController], 
-  providers: [UserService], 
+  controllers: [UserController],
+  providers: [UserService],
 })
 export class UserModule {}
