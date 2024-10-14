@@ -1,0 +1,25 @@
+services:
+  app:
+    image: node:20-alpine
+    container_name: ses-app
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URL=mongodb://127.0.0.1:27017/db?directConnection=true
+  mongodb:
+    image: mongo:latest
+    container_name: nest-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
