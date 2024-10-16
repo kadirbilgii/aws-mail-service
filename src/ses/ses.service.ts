@@ -1,22 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 @Injectable()
 export class SesService {
-  private sesClient: SESClient;
-
-  constructor() {
-    this.sesClient = new SESClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
-  }
+  constructor(@Inject('SES_CLIENT') private readonly sesClient: SESClient) {}
 
   async sendVerificationEmail(toEmail: string, token: string): Promise<void> {
     const verificationLink = `http://localhost:3000/user/verify-email?token=${token}`;

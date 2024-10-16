@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './models/entities/user.entity';
 import { UserModule } from './modules/user.module';
-import { SesModule } from './modules/ses.module';
 import { RedisModule } from './modules/redis.module';
+import { SesModule } from './modules/ses.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb://127.0.0.1:27017/db?directConnection=true',
-    ),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGO_URL),
     UserModule,
-    SesModule,
     RedisModule,
+    SesModule,
   ],
 })
 export class AppModule {}

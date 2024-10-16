@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Patch,
   Post,
   Query,
   Res,
@@ -20,7 +19,7 @@ export class UserController {
     @Res() res,
   ) {
     try {
-      await this.userService.registerUser(body.email, body.password);
+      await this.userService.register(body.email, body.password);
       return res
         .status(HttpStatus.CREATED)
         .json({ message: 'Verification email sent' });
@@ -40,23 +39,6 @@ export class UserController {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .send('Invalid or expired token');
-    }
-  }
-
-  @Patch('update-telecoms')
-  async updateTelecoms(
-    @Body() body: { email: string; telecoms: { email: string }[] },
-    @Res() res,
-  ) {
-    try {
-      await this.userService.updateTelecoms(body.email, body.telecoms);
-      return res
-        .status(HttpStatus.OK)
-        .json({ message: 'Verification email sent' });
-    } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Failed to update telecoms', error });
     }
   }
 

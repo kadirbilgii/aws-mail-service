@@ -1,19 +1,12 @@
 import { Module, Global } from '@nestjs/common';
-import { RedisModule as NestRedisModule } from '@nestjs-modules/ioredis';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { RedisProvider } from '../redis/redis.provider';
+import { RedisService } from '../redis/redis.service';
 
 @Global()
 @Module({
-  imports: [
-    NestRedisModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'single',
-        url: configService.get<string>(process.env.REDIS_URL),
-      }),
-      inject: [ConfigService],
-    }),
-  ],
-  exports: [NestRedisModule],
+  imports: [ConfigModule],
+  providers: [RedisProvider, RedisService],
+  exports: [RedisService],
 })
 export class RedisModule {}
